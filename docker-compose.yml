@@ -1,0 +1,48 @@
+services:
+  opensearch:
+    image: opensearchproject/opensearch:2.18.0
+    container_name: msrag-opensearch
+    environment:
+      - discovery.type=single-node
+      - DISABLE_SECURITY_PLUGIN=true
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=admin
+      - "OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g"
+      - plugins.ml_commons.only_run_on_ml_node=false
+      - plugins.ml_commons.model_access_control_enabled=false
+      - plugins.ml_commons.native_memory_threshold=99
+    ports:
+      - "9200:9200"
+      - "9600:9600"
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: msrag-postgres
+    environment:
+      - POSTGRES_DB=mas_compliance
+      - POSTGRES_USER=msrag
+      - POSTGRES_PASSWORD=msrag_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./corpus/data/sql/init_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./corpus/data/sql/seed/seed_enforcement_actions.sql:/docker-entrypoint-initdb.d/02_enforcement.sql:ro
+      - ./corpus/data/sql/seed/seed_regulatory_instruments.sql:/docker-entrypoint-initdb.d/03_instruments.sql:ro
+      - ./corpus/data/sql/seed/seed_regulated_entities.sql:/docker-entrypoint-initdb.d/04_entities.sql:ro
+      - ./corpus/data/sql/seed/05_readonly_role.sql:/docker-entrypoint-initdb.d/05_readonly_role.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U msrag -d mas_compliance"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  opensearch-data:
+  postgres-data:

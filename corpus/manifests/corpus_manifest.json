@@ -1,0 +1,808 @@
+{
+  "corpus_name": "MAS Regulatory Compliance",
+  "corpus_version": "1.0.0",
+  "created_date": "2026-04-04",
+  "target_document_count": "50-60",
+  "sources": {
+    "A_vector_store": "MAS regulatory PDFs \u2014 guidelines, notices, consultation papers, circulars, information papers, enforcement reports",
+    "B_sql_database": "Structured enforcement actions, regulatory instruments registry, regulated entities (OpenSanctions + MAS FI Directory)",
+    "C_web_fallback": "Real-time \u2014 new MAS publications, industry commentary, cross-jurisdictional references"
+  },
+  "documents": {
+    "core_guidelines": [
+      {
+        "id": "CG-001",
+        "title": "MAS Notice 626 \u2014 Prevention of Money Laundering and Countering the Financing of Terrorism \u2013 Banks",
+        "short_name": "Notice 626",
+        "instrument_type": "notice",
+        "effective_date": "2024-04-01",
+        "last_revised_date": "2025-06-30",
+        "applicable_sectors": [
+          "banking"
+        ],
+        "topic_tags": [
+          "aml_cft",
+          "cdd",
+          "sanctions",
+          "suspicious_transactions"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/amld-amendments---30-june-2025/mas-notice-626.pdf",
+        "alt_url": "https://www.mas.gov.sg/-/media/mas-media-library/regulation/notices/amld/notice-626/mas-notice-626-dated-28-march-2024.pdf",
+        "filename": "mas_notice_626_mar_2024_rev_jun_2025.pdf",
+        "category": "core_guidelines",
+        "notes": "Primary AML/CFT notice for banks. Numbered regulatory requirements \u2014 short, precise paragraphs."
+      },
+      {
+        "id": "CG-002",
+        "title": "Guidelines to MAS Notice 626 on Prevention of Money Laundering and Countering the Financing of Terrorism \u2013 Banks",
+        "short_name": "Guidelines to Notice 626",
+        "instrument_type": "guideline",
+        "effective_date": "2024-04-01",
+        "last_revised_date": "2025-06-30",
+        "applicable_sectors": [
+          "banking"
+        ],
+        "topic_tags": [
+          "aml_cft",
+          "cdd",
+          "pep",
+          "sanctions",
+          "ongoing_monitoring"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/amld-amendments---30-june-2025/guidelines-to-mas-notice-626.pdf",
+        "alt_url": "https://www.mas.gov.sg/-/media/mas-media-library/regulation/guidelines/amld/guidelines-to-notice-626-on-prevention-of-money-laundering-and-cft-for-banks/guidelines-to-mas-notice-626-revised-18-oct-2024.pdf",
+        "filename": "guidelines_to_notice_626_rev_jun_2025.pdf",
+        "category": "core_guidelines",
+        "notes": "Interpretive guidance for Notice 626. Discursive prose with cross-references to Notice paragraphs."
+      },
+      {
+        "id": "CG-003",
+        "title": "Technology Risk Management Guidelines",
+        "short_name": "TRM Guidelines",
+        "instrument_type": "guideline",
+        "effective_date": "2021-01-18",
+        "last_revised_date": "2021-01-18",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance",
+          "payments"
+        ],
+        "topic_tags": [
+          "technology_risk",
+          "cyber_security",
+          "it_governance",
+          "cloud",
+          "incident_reporting"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/MAS/Regulations-and-Financial-Stability/Regulatory-and-Supervisory-Framework/Risk-Management/TRM-Guidelines-18-January-2021.pdf",
+        "filename": "trm_guidelines_jan_2021.pdf",
+        "category": "core_guidelines",
+        "notes": "Comprehensive IT risk management. Sections on governance, SDLC, cyber surveillance, cloud, incident response."
+      },
+      {
+        "id": "CG-004",
+        "title": "Guidelines on Risk Management Practices \u2014 Internal Controls",
+        "short_name": "Internal Controls Guidelines",
+        "instrument_type": "guideline",
+        "effective_date": "2024-07-01",
+        "last_revised_date": "2024-07-01",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance"
+        ],
+        "topic_tags": [
+          "internal_controls",
+          "governance",
+          "audit",
+          "compliance",
+          "risk_management"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/mas/regulations-and-financial-stability/regulatory-and-supervisory-framework/risk-management/guidelines-on-risk-management-practices--internal-controls-july-2024.pdf",
+        "filename": "guidelines_internal_controls_jul_2024.pdf",
+        "category": "core_guidelines",
+        "notes": "July 2024 revision. Covers segregation of duties, audit, customer complaints, valuation."
+      },
+      {
+        "id": "CG-005",
+        "title": "Guidelines on Individual Accountability and Conduct",
+        "short_name": "IAC Guidelines",
+        "instrument_type": "guideline",
+        "effective_date": "2020-09-10",
+        "last_revised_date": "2020-09-10",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance"
+        ],
+        "topic_tags": [
+          "accountability",
+          "conduct",
+          "senior_management",
+          "governance",
+          "whistleblowing"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/MAS/MPI/Guidelines/Guidelines-on-Individual-Accountability-and-Conduct.pdf",
+        "filename": "guidelines_iac_sep_2020.pdf",
+        "category": "core_guidelines",
+        "notes": "5 accountability outcomes. Defines senior managers, core management functions, material risk personnel."
+      },
+      {
+        "id": "CG-006",
+        "title": "FAQs on Guidelines on Individual Accountability and Conduct",
+        "short_name": "IAC FAQs",
+        "instrument_type": "guideline",
+        "effective_date": "2020-09-10",
+        "last_revised_date": "2020-09-10",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance"
+        ],
+        "topic_tags": [
+          "accountability",
+          "conduct",
+          "senior_management"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/MAS/MPI/Guidelines/FAQs-on-Guidelines-on-Individual-Accountability-and-Conduct.pdf",
+        "filename": "faqs_iac_guidelines.pdf",
+        "category": "core_guidelines",
+        "notes": "Q&A format document supplementing IAC Guidelines."
+      },
+      {
+        "id": "CG-007",
+        "title": "Guidelines on Business Continuity Management",
+        "short_name": "BCM Guidelines",
+        "instrument_type": "guideline",
+        "effective_date": "2022-06-06",
+        "last_revised_date": "2022-06-06",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance",
+          "payments"
+        ],
+        "topic_tags": [
+          "business_continuity",
+          "operational_resilience",
+          "disaster_recovery",
+          "incident_management"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/mas/regulations-and-financial-stability/regulatory-and-supervisory-framework/risk-management/bcm-guidelines/bcm-guidelines-june-2022.pdf",
+        "filename": "guidelines_bcm_jun_2022.pdf",
+        "category": "core_guidelines",
+        "notes": "2022 revision supersedes 2003 version. End-to-end service-centric view, critical business services. Need to fetch exact PDF URL from landing page."
+      },
+      {
+        "id": "CG-008",
+        "title": "Guidelines on Outsourcing (Banks)",
+        "short_name": "Outsourcing Guidelines (Banks)",
+        "instrument_type": "guideline",
+        "effective_date": "2023-12-11",
+        "last_revised_date": "2023-12-11",
+        "applicable_sectors": [
+          "banking"
+        ],
+        "topic_tags": [
+          "outsourcing",
+          "vendor_management",
+          "cloud",
+          "third_party_risk"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/mas-media-library/regulation/guidelines/bd/guidelines-on-outsourcing/guidelines-on-outsourcing-banks.pdf",
+        "filename": "guidelines_outsourcing_banks_dec_2023.pdf",
+        "category": "core_guidelines",
+        "notes": "Bank-specific outsourcing guidelines. Covers due diligence, cloud computing, cross-border outsourcing."
+      },
+      {
+        "id": "CG-009",
+        "title": "Guidelines on Outsourcing (Financial Institutions other than Banks)",
+        "short_name": "Outsourcing Guidelines (Non-Banks)",
+        "instrument_type": "guideline",
+        "effective_date": "2023-12-11",
+        "last_revised_date": "2023-12-11",
+        "applicable_sectors": [
+          "capital_markets",
+          "insurance",
+          "payments"
+        ],
+        "topic_tags": [
+          "outsourcing",
+          "vendor_management",
+          "cloud",
+          "third_party_risk"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/mas-media-library/regulation/guidelines/bd/guidelines-on-outsourcing/guidelines-on-outsourcing--financial-institutions-other-than-banks-updated.pdf",
+        "filename": "guidelines_outsourcing_non_banks_dec_2023.pdf",
+        "category": "core_guidelines",
+        "notes": "Parallel outsourcing guidelines for non-bank FIs."
+      },
+      {
+        "id": "CG-010",
+        "title": "Guidelines on Fair Dealing \u2014 Board and Senior Management Responsibilities",
+        "short_name": "Fair Dealing Guidelines",
+        "instrument_type": "guideline",
+        "effective_date": "2024-05-30",
+        "last_revised_date": "2024-05-30",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance"
+        ],
+        "topic_tags": [
+          "fair_dealing",
+          "customer_protection",
+          "business_conduct",
+          "disclosure"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/mas-media-library/fair-dealing-guidelines-30-may-2024.pdf",
+        "filename": "guidelines_fair_dealing_may_2024.pdf",
+        "category": "core_guidelines",
+        "notes": "May 2024 revision. Fair dealing outcomes for customers."
+      },
+      {
+        "id": "CG-011",
+        "title": "MAS Notice FSM-N02 \u2014 Prevention of Money Laundering and Countering the Financing of Terrorism \u2013 Financial Institutions' Information Sharing Platform",
+        "short_name": "Notice FSM-N02 (COSMIC)",
+        "instrument_type": "notice",
+        "effective_date": "2024-04-01",
+        "last_revised_date": "2024-03-28",
+        "applicable_sectors": [
+          "banking"
+        ],
+        "topic_tags": [
+          "aml_cft",
+          "cosmic",
+          "information_sharing",
+          "fi_fi"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/mas-media-library/regulation/notices/amld/notice-fsm-n02/cosmic-notice-mar-2024---final.pdf",
+        "filename": "notice_fsm_n02_cosmic_mar_2024.pdf",
+        "category": "core_guidelines",
+        "notes": "COSMIC platform notice \u2014 FI-to-FI AML information sharing requirements."
+      },
+      {
+        "id": "CG-012",
+        "title": "Guidelines to MAS Notice FSM-N02 on Prevention of Money Laundering and Countering the Financing of Terrorism \u2013 Financial Institutions' Information Sharing Platform",
+        "short_name": "Guidelines to COSMIC Notice",
+        "instrument_type": "guideline",
+        "effective_date": "2024-10-18",
+        "last_revised_date": "2024-10-18",
+        "applicable_sectors": [
+          "banking"
+        ],
+        "topic_tags": [
+          "aml_cft",
+          "cosmic",
+          "information_sharing",
+          "risk_assessment"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/mas-media-library/regulation/guidelines/amld/cosmic-guidelines/guidelines-to-mas-notice-fsmn02-cosmic.pdf",
+        "filename": "guidelines_cosmic_oct_2024.pdf",
+        "category": "core_guidelines",
+        "notes": "Interpretive guidance for COSMIC platform requirements."
+      },
+      {
+        "id": "CG-013",
+        "title": "Notice FSM-N21 Technology Risk Management",
+        "short_name": "Notice FSM-N21",
+        "instrument_type": "notice",
+        "effective_date": "2024-05-10",
+        "last_revised_date": "2024-05-10",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance",
+          "payments"
+        ],
+        "topic_tags": [
+          "technology_risk",
+          "cyber_security",
+          "incident_reporting"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/mas-media-library/regulation/notices/trpd/fsm-n21/mas-notice-fsm-n21.pdf",
+        "filename": "notice_fsm_n21_trm_may_2024.pdf",
+        "category": "core_guidelines",
+        "notes": "Companion notice to TRM Guidelines. Need to extract PDF URL from landing page."
+      }
+    ],
+    "consultation_papers": [
+      {
+        "id": "CP-001",
+        "title": "Consultation Paper on Proposed Guidelines on Artificial Intelligence Risk Management for Financial Institutions",
+        "short_name": "AI Risk Management Consultation",
+        "instrument_type": "consultation_paper",
+        "effective_date": "2025-11-13",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance",
+          "payments"
+        ],
+        "topic_tags": [
+          "ai_governance",
+          "model_risk",
+          "fairness",
+          "transparency",
+          "explainability"
+        ],
+        "status": "consultation_closed",
+        "url": "https://www.mas.gov.sg/-/media/mas-media-library/publications/consultations/bd/2025/final_consultation_paper_on_guidelines_on_ai_risk_management_forrelease.pdf",
+        "filename": "consultation_ai_risk_management_nov_2025.pdf",
+        "category": "consultation_papers",
+        "notes": "Key document for temporal gap testing \u2014 can be excluded from corpus to test web fallback."
+      },
+      {
+        "id": "CP-002",
+        "title": "Response to Feedback Received on Proposed Revisions to Technology Risk Management Guidelines",
+        "short_name": "TRM Consultation Response",
+        "instrument_type": "consultation_paper",
+        "effective_date": "2021-01-18",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance",
+          "payments"
+        ],
+        "topic_tags": [
+          "technology_risk",
+          "cyber_security"
+        ],
+        "status": "consultation_closed",
+        "url": "https://www.mas.gov.sg/-/media/MAS/News-and-Publications/Consultation-Papers/Response-to-Consultation-Paper_TRM-Guidelines-2021.pdf",
+        "filename": "response_trm_consultation_jan_2021.pdf",
+        "category": "consultation_papers",
+        "notes": "Response to feedback on TRM Guidelines revision."
+      },
+      {
+        "id": "CP-003",
+        "title": "Consultation Paper on Proposed Revisions to Business Continuity Management Guidelines",
+        "short_name": "BCM Consultation",
+        "instrument_type": "consultation_paper",
+        "effective_date": "2019-01-01",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance",
+          "payments"
+        ],
+        "topic_tags": [
+          "business_continuity",
+          "operational_resilience"
+        ],
+        "status": "consultation_closed",
+        "url": "https://www.mas.gov.sg/-/media/MAS/News-and-Publications/Consultation-Papers/Consultation-Paper-on-Proposed-Revisions-to-Business-Continuity-Management-Guidelines.pdf",
+        "filename": "consultation_bcm_revisions.pdf",
+        "category": "consultation_papers",
+        "notes": "First consultation on BCM Guidelines revisions."
+      },
+      {
+        "id": "CP-004",
+        "title": "Response to Feedback Received \u2014 Proposed Guidelines on Individual Accountability and Conduct",
+        "short_name": "IAC Consultation Response",
+        "instrument_type": "consultation_paper",
+        "effective_date": "2020-09-10",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance"
+        ],
+        "topic_tags": [
+          "accountability",
+          "conduct",
+          "governance"
+        ],
+        "status": "consultation_closed",
+        "url": "https://www.mas.gov.sg/-/media/Response-to-Feedback-Received_Proposed-Guidelines-on-Individual-Accountability-and-Conduct.pdf",
+        "filename": "response_iac_consultation_sep_2020.pdf",
+        "category": "consultation_papers",
+        "notes": "Response to feedback on IAC Guidelines."
+      },
+      {
+        "id": "CP-005",
+        "title": "Consultation Paper on Guidelines on Outsourcing",
+        "short_name": "Outsourcing Consultation",
+        "instrument_type": "consultation_paper",
+        "effective_date": "2014-09-01",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance"
+        ],
+        "topic_tags": [
+          "outsourcing",
+          "cloud",
+          "third_party_risk"
+        ],
+        "status": "consultation_closed",
+        "url": "https://www.mas.gov.sg/~/media/MAS/News%20and%20Publications/Consultation%20Papers/ConsultationPaper_Guidelines%20on%20Outsourcing.pdf",
+        "filename": "consultation_outsourcing_sep_2014.pdf",
+        "category": "consultation_papers",
+        "notes": "Original consultation on outsourcing guidelines."
+      }
+    ],
+    "enforcement_reports": [
+      {
+        "id": "ER-001",
+        "title": "MAS Enforcement Monograph",
+        "short_name": "Enforcement Monograph",
+        "instrument_type": "information_paper",
+        "effective_date": "2018-09-01",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance",
+          "payments"
+        ],
+        "topic_tags": [
+          "enforcement",
+          "powers",
+          "strategy",
+          "process"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/MAS/News-and-Publications/Monographs-and-Information-Papers/Enforcement-Monograph-sep-2018.pdf",
+        "filename": "enforcement_monograph_sep_2018.pdf",
+        "category": "enforcement_reports",
+        "notes": "Evergreen reference on MAS enforcement approach, powers, and strategy."
+      },
+      {
+        "id": "ER-002",
+        "title": "MAS Enforcement Report 2019/2020",
+        "short_name": "Enforcement Report 2019/2020",
+        "instrument_type": "information_paper",
+        "effective_date": "2020-11-04",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance",
+          "payments"
+        ],
+        "topic_tags": [
+          "enforcement",
+          "penalties",
+          "market_abuse",
+          "aml_cft"
+        ],
+        "status": "historical",
+        "url": "https://www.mas.gov.sg/-/media/MAS/News-and-Publications/Monographs-and-Information-Papers/Enforcement-Report-2019-2020.pdf",
+        "filename": "enforcement_report_2019_2020.pdf",
+        "category": "enforcement_reports",
+        "notes": "Covers Jan 2019 to Jun 2020. Goldman Sachs 1MDB, UBS civil penalty."
+      },
+      {
+        "id": "ER-003",
+        "title": "MAS Enforcement Report 2020/2021",
+        "short_name": "Enforcement Report 2020/2021",
+        "instrument_type": "information_paper",
+        "effective_date": "2022-03-01",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance",
+          "payments"
+        ],
+        "topic_tags": [
+          "enforcement",
+          "penalties",
+          "market_abuse",
+          "aml_cft"
+        ],
+        "status": "historical",
+        "url": "https://www.mas.gov.sg/-/media/mas/news-and-publications/monographs-and-information-papers/enforcement-report-2020-2021.pdf",
+        "filename": "enforcement_report_2020_2021.pdf",
+        "category": "enforcement_reports",
+        "notes": "Covers Jul 2020 to Dec 2021."
+      },
+      {
+        "id": "ER-004",
+        "title": "MAS Enforcement Report 2022/2023",
+        "short_name": "Enforcement Report 2022/2023",
+        "instrument_type": "information_paper",
+        "effective_date": "2023-09-19",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance",
+          "payments"
+        ],
+        "topic_tags": [
+          "enforcement",
+          "penalties",
+          "market_abuse",
+          "aml_cft",
+          "wirecard"
+        ],
+        "status": "historical",
+        "url": "https://www.mas.gov.sg/-/media/mas/news-and-publications/monographs-and-information-papers/4th-enforcement-report.pdf",
+        "filename": "enforcement_report_2022_2023.pdf",
+        "category": "enforcement_reports",
+        "notes": "Covers Jan 2022 to Jun 2023. Wirecard enforcement actions, $7.1M AML penalties."
+      },
+      {
+        "id": "ER-005",
+        "title": "MAS Enforcement Report 2023/2024",
+        "short_name": "Enforcement Report 2023/2024",
+        "instrument_type": "information_paper",
+        "effective_date": "2025-04-01",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance",
+          "payments"
+        ],
+        "topic_tags": [
+          "enforcement",
+          "penalties",
+          "market_abuse",
+          "aml_cft"
+        ],
+        "status": "current",
+        "url": "https://www.mas.gov.sg/-/media/mas/news-and-publications/monographs-and-information-papers/5th-enf-report-2023-2024.pdf",
+        "filename": "enforcement_report_2023_2024.pdf",
+        "category": "enforcement_reports",
+        "notes": "Latest report. Covers Jul 2023 to Dec 2024. Includes 2025/2026 enforcement priorities."
+      }
+    ],
+    "info_papers_circulars": [
+      {
+        "id": "IP-001",
+        "title": "AML/CFT Supervisory Expectations from Recent Inspections",
+        "short_name": "AML/CFT Supervisory Expectations",
+        "instrument_type": "information_paper",
+        "effective_date": "2024-10-01",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance",
+          "payments"
+        ],
+        "topic_tags": [
+          "aml_cft",
+          "cdd",
+          "source_of_wealth",
+          "ongoing_monitoring",
+          "inspections"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/mas-media-library/regulation/guidance/amld/amlcft-supervisory-expectations-from-recent-inspections---oct-2024-1.pdf",
+        "filename": "amlcft_supervisory_expectations_oct_2024.pdf",
+        "category": "info_papers_circulars",
+        "notes": "Oct 2024. Covers customer risk assessment, red flags, source of wealth, risk mitigation, monitoring."
+      },
+      {
+        "id": "IP-002",
+        "title": "Information Paper on Artificial Intelligence Model Risk Management",
+        "short_name": "AI Model Risk Management Paper",
+        "instrument_type": "information_paper",
+        "effective_date": "2024-01-01",
+        "applicable_sectors": [
+          "banking"
+        ],
+        "topic_tags": [
+          "ai_governance",
+          "model_risk",
+          "explainability",
+          "fairness"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/mas-media-library/publications/monographs-or-information-paper/imd/2024/information-paper-on-ai-risk-management-final.pdf",
+        "filename": "info_paper_ai_model_risk_2024.pdf",
+        "category": "info_papers_circulars",
+        "notes": "Thematic review of banks' AI model risk management. Good practices for governance, development, deployment."
+      },
+      {
+        "id": "IP-003",
+        "title": "MindForge AI Risk Management Operationalisation Handbook",
+        "short_name": "MindForge Handbook",
+        "instrument_type": "information_paper",
+        "effective_date": "2026-01-01",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance",
+          "payments"
+        ],
+        "topic_tags": [
+          "ai_governance",
+          "model_risk",
+          "feat_principles",
+          "operationalisation"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/mas-media-library/schemes-and-initiatives/ftig/project-mindforge/mindforge-ai-risk-management-operationalisation-handbook.pdf",
+        "filename": "mindforge_ai_handbook_jan_2026.pdf",
+        "category": "info_papers_circulars",
+        "notes": "Industry-driven handbook launched at Singapore Fintech Festival Nov 2025. Operationalises FEAT principles."
+      },
+      {
+        "id": "IP-004",
+        "title": "Principles to Promote Fairness, Ethics, Accountability and Transparency (FEAT) in AI and Data Analytics",
+        "short_name": "FEAT Principles",
+        "instrument_type": "information_paper",
+        "effective_date": "2018-11-01",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance",
+          "payments"
+        ],
+        "topic_tags": [
+          "ai_governance",
+          "fairness",
+          "ethics",
+          "accountability",
+          "transparency"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/~/media/MAS/News%20and%20Publications/Monographs%20and%20Information%20Papers/FEAT%20Principles%20Final.pdf",
+        "filename": "feat_principles_2018.pdf",
+        "category": "info_papers_circulars",
+        "notes": "Foundation AI governance document. Referenced by AI Risk Management consultation."
+      },
+      {
+        "id": "IP-005",
+        "title": "Strengthening AML/CFT Name Screening Practices",
+        "short_name": "Name Screening Practices",
+        "instrument_type": "information_paper",
+        "effective_date": "2022-04-01",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets",
+          "insurance",
+          "payments"
+        ],
+        "topic_tags": [
+          "aml_cft",
+          "name_screening",
+          "sanctions",
+          "fuzzy_matching"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/MAS-Media-Library/publications/monographs-or-information-paper/IMD/2022/Strengthening-AML-CFT-Name-Screening-Practices.pdf",
+        "filename": "amlcft_name_screening_apr_2022.pdf",
+        "category": "info_papers_circulars",
+        "notes": "Thematic inspection findings on name screening. Covers governance, parameters, alert resolution."
+      },
+      {
+        "id": "IP-006",
+        "title": "Strengthening AML/CFT Practices for External Asset Managers",
+        "short_name": "EAM AML/CFT Practices",
+        "instrument_type": "information_paper",
+        "effective_date": "2022-01-01",
+        "applicable_sectors": [
+          "capital_markets"
+        ],
+        "topic_tags": [
+          "aml_cft",
+          "external_asset_managers",
+          "governance",
+          "risk_assessment"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/MAS-Media-Library/publications/monographs-or-information-paper/CMI1/2022/Strengthening-AML_CFT-Practices-for-External-Asset-Managers.pdf",
+        "filename": "amlcft_eam_practices_2022.pdf",
+        "category": "info_papers_circulars",
+        "notes": "Inspection-based guidance for external asset managers."
+      },
+      {
+        "id": "IP-007",
+        "title": "Guidance for Effective AML/CFT Transaction Monitoring Controls",
+        "short_name": "Transaction Monitoring Guidance",
+        "instrument_type": "information_paper",
+        "effective_date": "2023-01-01",
+        "applicable_sectors": [
+          "banking",
+          "capital_markets"
+        ],
+        "topic_tags": [
+          "aml_cft",
+          "transaction_monitoring",
+          "suspicious_transactions",
+          "typologies"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/MAS/Regulations-and-Financial-Stability/Regulatory-and-Supervisory-Framework/Anti_Money-Laundering_Countering-the-Financing-of-Terrorism/Guidance-for-Effective-AML-CFT-Transaction-Monitoring-Controls.pdf",
+        "filename": "guidance_amlcft_transaction_monitoring.pdf",
+        "category": "info_papers_circulars",
+        "notes": "Guidance on TM governance, risk-based calibration, alert handling, STR filing."
+      },
+      {
+        "id": "IP-008",
+        "title": "Guidance to Capital Markets Intermediaries on Enhancing AML/CFT Frameworks and Controls",
+        "short_name": "CMI AML/CFT Guidance",
+        "instrument_type": "information_paper",
+        "effective_date": "2023-01-01",
+        "applicable_sectors": [
+          "capital_markets"
+        ],
+        "topic_tags": [
+          "aml_cft",
+          "capital_markets",
+          "governance",
+          "risk_assessment",
+          "cdd"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/MAS/Regulations-and-Financial-Stability/Regulatory-and-Supervisory-Framework/Anti_Money-Laundering_Countering-the-Financing-of-Terrorism/Guidance-to-Capital-Markets-Intermediaries-on-Enhancing-AMLCFT-Frameworks-and-Controls.pdf",
+        "filename": "guidance_cmi_amlcft_frameworks.pdf",
+        "category": "info_papers_circulars",
+        "notes": "Three-pillar AML/CFT framework guidance for CMIs."
+      },
+      {
+        "id": "IP-009",
+        "title": "Effective AML/CFT Controls in Private Banking",
+        "short_name": "Private Banking AML/CFT",
+        "instrument_type": "information_paper",
+        "effective_date": "2019-01-01",
+        "applicable_sectors": [
+          "banking"
+        ],
+        "topic_tags": [
+          "aml_cft",
+          "private_banking",
+          "cdd",
+          "source_of_wealth"
+        ],
+        "status": "in_force",
+        "url": "https://www.mas.gov.sg/-/media/MAS/Regulations-and-Financial-Stability/Regulatory-and-Supervisory-Framework/Anti_Money-Laundering_Countering-the-Financing-of-Terrorism/Effective-AML_CFT-Controls-in-Private-Banking.pdf",
+        "filename": "amlcft_private_banking.pdf",
+        "category": "info_papers_circulars",
+        "notes": "Inspection findings and sound practices for private banking AML/CFT."
+      }
+    ],
+    "structured_data_sources": [
+      {
+        "id": "SD-001",
+        "title": "OpenSanctions \u2014 Singapore MAS Enforcement Actions",
+        "type": "structured_dataset",
+        "format": "JSON/CSV",
+        "license": "CC BY-NC 4.0",
+        "update_frequency": "weekly",
+        "entity_count_approx": 1175,
+        "url_csv": "https://data.opensanctions.org/datasets/latest/sg_mas_enforcement_actions/targets.simple.csv",
+        "url_json": "https://data.opensanctions.org/datasets/latest/sg_mas_enforcement_actions/entities.ftm.json",
+        "landing_page": "https://www.opensanctions.org/datasets/sg_mas_enforcement_actions/",
+        "notes": "201 people, 116 companies, 132 articles. Maps to enforcement_actions and regulated_entities SQL tables."
+      },
+      {
+        "id": "SD-002",
+        "title": "MAS Financial Institutions Directory",
+        "type": "web_scrape",
+        "format": "HTML (requires scraping)",
+        "url": "https://eservices.mas.gov.sg/fid",
+        "notes": "All regulated FIs by sector and licence type. Maps to regulated_entities SQL table. Scrapeable."
+      },
+      {
+        "id": "SD-003",
+        "title": "MAS Enforcement Actions List",
+        "type": "web_scrape",
+        "format": "HTML (requires scraping)",
+        "url": "https://www.mas.gov.sg/regulation/enforcement/enforcement-actions",
+        "notes": "Formal regulatory and enforcement actions. Supplements OpenSanctions data."
+      }
+    ]
+  },
+  "document_counts": {
+    "core_guidelines": 13,
+    "consultation_papers": 5,
+    "enforcement_reports": 5,
+    "info_papers_circulars": 9,
+    "total_pdf_documents": 32,
+    "target_with_additional": "40-60 (add more consultation papers and circulars as needed)"
+  }
+}

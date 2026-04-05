@@ -1,0 +1,19 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.claude/
+CLAUDE.md
+project2_domain_spec.md
+project2_build_spec.md
+scripts/
+
+# Docker volumes (managed by docker-compose)
+postgres-data/
+opensearch-data/
+
+# Corpus — generated/intermediate data (reproducible via scripts)
+corpus/ingestion_output/
+corpus/data/opensanctions/
+corpus/data/sql/seed/*.json
+corpus/manifests/download_log.json
