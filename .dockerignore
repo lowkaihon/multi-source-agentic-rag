@@ -1,0 +1,27 @@
+.git
+.venv
+__pycache__
+*.pyc
+.env
+.claude/
+CLAUDE.md
+
+# Specs (not needed at runtime)
+project2_domain_spec.md
+project2_build_spec.md
+
+# Large corpus files (not needed at API runtime)
+corpus/ingestion_output/opensearch_documents.json
+corpus/data/opensanctions/
+corpus/data/sql/seed/
+
+# Scripts (setup/deploy only)
+scripts/
+
+# Infrastructure
+infra/
+.github/
+
+# Docker volumes
+postgres-data/
+opensearch-data/

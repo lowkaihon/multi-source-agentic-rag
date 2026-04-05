@@ -6,11 +6,19 @@ __pycache__/
 CLAUDE.md
 project2_domain_spec.md
 project2_build_spec.md
-scripts/
+scripts/local/
+archive/
 
 # Docker volumes (managed by docker-compose)
 postgres-data/
 opensearch-data/
+
+# Terraform
+infra/.terraform/
+infra/*.tfstate
+infra/*.tfstate.backup
+infra/tfplan
+infra/*.tfvars.secret
 
 # Corpus — generated/intermediate data (reproducible via scripts)
 corpus/ingestion_output/

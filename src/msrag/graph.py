@@ -164,13 +164,16 @@ def build_context(
     agent_system_prompt = build_agent_system_prompt(manifest)
 
     # Initialize tiktoken encoder (cached, reused across calls)
-    encoder = tiktoken.encoding_for_model("gpt-4o-mini")
+    try:
+        encoder = tiktoken.encoding_for_model("gpt-5.4-mini")
+    except KeyError:
+        encoder = tiktoken.get_encoding("o200k_base")
 
     # Build middleware for history trimming
     trim_middleware = _build_trim_middleware(encoder)
 
     # Create agent subgraph
-    model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+    model = ChatOpenAI(model="gpt-5.4-mini", temperature=0)
     agent_subgraph = create_agent(
         model=model,
         tools=tools,

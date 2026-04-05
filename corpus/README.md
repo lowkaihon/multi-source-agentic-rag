@@ -70,5 +70,5 @@ corpus/
 ## Models
 
 - **Embedding**: `text-embedding-3-small`
-- **LLM**: `gpt-4o-mini` (all pipeline nodes)
+- **LLM**: `gpt-5.4-mini` (all pipeline nodes)
 - **PDF extraction**: PyMuPDF

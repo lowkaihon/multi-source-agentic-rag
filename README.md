@@ -42,7 +42,7 @@ graph TD;
 
 | Node | Role |
 |------|------|
-| `agent_retrieve` | ReAct tool-calling loop (gpt-4o-mini) — picks tools, evaluates results, retries |
+| `agent_retrieve` | ReAct tool-calling loop (gpt-5.4-mini) — picks tools, evaluates results, retries |
 | `quality_gate` | 3 deterministic policies, zero LLM calls — catches what the agent might rationalize |
 | `generate` | Assembles context from all sources, enforces citation-per-claim grounding |
 
@@ -110,7 +110,7 @@ Sources: enforcement_actions (SQL)
 |-----------|-----------|
 | Orchestration | LangGraph (StateGraph, MemorySaver) |
 | Agent | LangChain `create_agent` (ReAct loop) |
-| LLM | OpenAI gpt-4o-mini |
+| LLM | OpenAI gpt-5.4-mini |
 | Embeddings | text-embedding-3-small (1536-dim) |
 | Reranking | ms-marco-MiniLM-L-6-v2 (OpenSearch ML plugin, Python fallback) |
 | Vector + keyword search | OpenSearch 2.18.0 |

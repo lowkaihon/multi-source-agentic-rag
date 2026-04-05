@@ -89,7 +89,7 @@ Rules:
 - If the context does not contain enough information to answer, say so explicitly.
 """
 
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
+    llm = ChatOpenAI(model="gpt-5.4-mini", temperature=0.2)
     response = llm.invoke(
         [
             {"role": "system", "content": system_prompt},
