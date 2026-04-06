@@ -76,11 +76,10 @@ Intelligently routes queries across **vector search** (regulatory PDFs),
 
 ## Architecture
 
-3-node LangGraph pipeline: `agent_retrieve` -> `quality_gate` -> `generate`
+2-node LangGraph pipeline: `agent_retrieve` -> `quality_gate`
 
-- **agent_retrieve**: ReAct tool-calling loop (gpt-5.4-mini) — picks tools, evaluates results, retries
-- **quality_gate**: 3 deterministic policies, zero LLM calls
-- **generate**: Assembles context from all sources, enforces citation-per-claim grounding
+- **agent_retrieve**: ReAct tool-calling loop (gpt-5.4-mini) — picks tools, evaluates results, produces cited answer
+- **quality_gate**: 3 deterministic policies, zero LLM calls — routes to retry or END
 """
 
 app = FastAPI(
@@ -162,9 +161,8 @@ async def query_rag(request: QueryRequest):
     """Query the RAG pipeline.
 
     Runs the full agentic RAG pipeline:
-    1. Agent selects tools (vector_search, sql_query, web_search)
-    2. Quality gate enforces retrieval policies
-    3. Generator produces cited answer
+    1. Agent selects tools and produces a cited answer
+    2. Quality gate enforces retrieval policies (retry or pass)
 
     Supports semantic caching for repeated/similar questions.
     """

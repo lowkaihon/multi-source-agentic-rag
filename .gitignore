@@ -8,6 +8,7 @@ project2_domain_spec.md
 project2_build_spec.md
 scripts/local/
 archive/
+evaluation/results/
 
 # Docker volumes (managed by docker-compose)
 postgres-data/

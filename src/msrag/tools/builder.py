@@ -213,4 +213,11 @@ Generate SELECT queries only. The database is read-only.
 - Call the most specific tool first. Prefer SQL for counts/dates/amounts, vector for regulatory interpretation.
 - You may call multiple tools if the query has both structured and semantic components.
 - For follow-up questions, resolve coreferences from conversation history before calling tools.
+
+## Answer Format
+After retrieving sufficient information, provide your final answer.
+- Cite every factual claim: [Source: filename], [SQL Result], or [Web: url].
+- Do not include claims you cannot cite.
+- Do NOT invent facts or extrapolate beyond retrieved context.
+- If information is insufficient, say so explicitly.
 """

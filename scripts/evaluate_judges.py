@@ -7,8 +7,8 @@ aggregate metrics.
 
 Usage:
     uv run python scripts/evaluate_judges.py \
-        --input evaluation_results_raw.json \
-        --output evaluation_results.json
+        --input evaluation/results/evaluation_results_raw.json \
+        --output evaluation/results/evaluation_results.json
 """
 
 from __future__ import annotations
@@ -324,12 +324,12 @@ def main():
     parser = argparse.ArgumentParser(description="LLM-as-judge scoring")
     parser.add_argument(
         "--input",
-        default="evaluation_results_raw.json",
+        default="evaluation/results/evaluation_results_raw.json",
         help="Raw results from run_evaluation.py",
     )
     parser.add_argument(
         "--output",
-        default="evaluation_results.json",
+        default="evaluation/results/evaluation_results.json",
         help="Output path for scored results",
     )
     args = parser.parse_args()

@@ -4,8 +4,6 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Literal
-
 import tiktoken
 from langchain.agents import create_agent
 from langchain.agents.middleware import ModelRequest, dynamic_prompt
@@ -15,7 +13,6 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 
 from msrag.nodes.agent_retrieve import agent_retrieve_node
-from msrag.nodes.generate import generate_node
 from msrag.nodes.quality_gate import quality_gate_node
 from msrag.state import Context, PipelineState
 from msrag.tools.builder import (
@@ -29,31 +26,29 @@ from msrag.tools.vector_search import OpenSearchClient
 
 def route_after_quality_gate(
     state: PipelineState,
-) -> Literal["agent_retrieve", "generate"]:
-    """Route: quality passed → generate; max retries → generate with caveat; else retry."""
+) -> str:
+    """Route: quality passed → END; max retries → END with caveat; else retry."""
     if state.get("quality_passed"):
-        return "generate"
+        return END
     if (state.get("retrieval_attempts") or 0) >= 2:
-        return "generate"  # Proceed with confidence caveat
+        return END  # Proceed with confidence caveat
     return "agent_retrieve"  # Retry with feedback
 
 
 def build_graph():
-    """Build and compile the 3-node RAG pipeline graph."""
+    """Build and compile the 2-node RAG pipeline graph."""
     builder = StateGraph(PipelineState, context_schema=Context)
 
     builder.add_node("agent_retrieve", agent_retrieve_node)
     builder.add_node("quality_gate", quality_gate_node)
-    builder.add_node("generate", generate_node)
 
     builder.add_edge(START, "agent_retrieve")
     builder.add_edge("agent_retrieve", "quality_gate")
     builder.add_conditional_edges(
         "quality_gate",
         route_after_quality_gate,
-        {"agent_retrieve": "agent_retrieve", "generate": "generate"},
+        {"agent_retrieve": "agent_retrieve", END: END},
     )
-    builder.add_edge("generate", END)
 
     return builder.compile(checkpointer=MemorySaver())
 

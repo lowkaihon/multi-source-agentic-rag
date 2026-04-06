@@ -6,8 +6,8 @@ state, diagnostic metrics, and latency.
 
 Usage:
     uv run python scripts/run_evaluation.py \
-        --dataset corpus/golden_dataset.json \
-        --output evaluation_results_raw.json \
+        --dataset evaluation/golden_dataset.json \
+        --output evaluation/results/evaluation_results_raw.json \
         --include-naive
 """
 
@@ -97,7 +97,7 @@ def _run_single_query_inner(
         "quality_passed": accumulated.get("quality_passed"),
         "quality_feedback": accumulated.get("quality_feedback"),
         "retrieval_attempts": accumulated.get("retrieval_attempts", 0),
-        "agent_reasoning": accumulated.get("agent_reasoning"),
+        "agent_reasoning": accumulated.get("final_answer"),
         "node_sequence": node_sequence,
         "latency_seconds": round(elapsed, 2),
     }
@@ -435,12 +435,12 @@ def main():
     parser = argparse.ArgumentParser(description="Run RAG evaluation harness")
     parser.add_argument(
         "--dataset",
-        default="corpus/golden_dataset.json",
+        default="evaluation/golden_dataset.json",
         help="Path to golden dataset JSON",
     )
     parser.add_argument(
         "--output",
-        default="evaluation_results_raw.json",
+        default="evaluation/results/evaluation_results_raw.json",
         help="Output path for raw results",
     )
     parser.add_argument(

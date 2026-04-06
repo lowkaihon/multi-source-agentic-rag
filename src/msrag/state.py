@@ -9,7 +9,7 @@ from typing_extensions import Annotated, TypedDict
 
 
 class PipelineState(TypedDict):
-    """Full state schema for the 3-node RAG pipeline."""
+    """Full state schema for the 2-node RAG pipeline."""
 
     # === INPUT ===
     user_question: str
@@ -20,16 +20,13 @@ class PipelineState(TypedDict):
     sql_results: Optional[list[dict]]  # Raw rows
     web_results: Optional[list[dict]]  # [{snippet, url}]
     tools_called: Optional[list[str]]  # ["vector_search", "sql_query"]
-    agent_reasoning: Optional[str]  # For LangSmith traces
+    final_answer: Optional[str]  # Agent's cited answer
+    citations: Optional[list[dict]]  # [{type, source}]
 
     # === QUALITY GATE ===
     quality_passed: Optional[bool]
     quality_feedback: Optional[str]  # Structured feedback for retry
     retrieval_attempts: Optional[int]  # Max 2: initial + 1 retry
-
-    # === GENERATION ===
-    final_answer: Optional[str]
-    citations: Optional[list[dict]]  # [{source, page, chunk_id}]
     confidence_caveat: Optional[str]  # Set if quality gate failed twice
 
 

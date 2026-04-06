@@ -11,6 +11,20 @@ from langchain_core.runnables import RunnableConfig
 from msrag.state import PipelineState
 
 
+_CONFIDENCE_CAVEAT = (
+    "Note: This answer is based on limited context. "
+    "The retrieved documents may not fully cover this topic. "
+    "Please verify against the original MAS publications."
+)
+
+
+def _maybe_add_caveat(result: dict) -> dict:
+    """Add confidence caveat if quality failed and max retries reached."""
+    if not result["quality_passed"] and result["retrieval_attempts"] >= 2:
+        result["confidence_caveat"] = _CONFIDENCE_CAVEAT
+    return result
+
+
 def quality_gate_node(state: PipelineState, config: RunnableConfig) -> dict:
     """Policy enforcement point. No LLM calls."""
     attempts = (state.get("retrieval_attempts") or 0) + 1
@@ -30,14 +44,14 @@ def quality_gate_node(state: PipelineState, config: RunnableConfig) -> dict:
             "vector_search" in tools_called or "sql_query" in tools_called
         )
         if not primary_attempted:
-            return {
+            return _maybe_add_caveat({
                 "quality_passed": False,
                 "quality_feedback": (
                     "Answer must be grounded in indexed corpus or structured database. "
                     "Try vector_search or sql_query before relying on web results."
                 ),
                 "retrieval_attempts": attempts,
-            }
+            })
 
     # Policy 2: All sources empty — retry only if untried tools remain.
     if not chunks and not sql_results and not web_results:
@@ -47,13 +61,13 @@ def quality_gate_node(state: PipelineState, config: RunnableConfig) -> dict:
             if t not in tools_called
         ]
         if untried:
-            return {
+            return _maybe_add_caveat({
                 "quality_passed": False,
                 "quality_feedback": f"All results empty. Try: {', '.join(untried)}.",
                 "retrieval_attempts": attempts,
-            }
-        # All tools tried, all empty — retrying won't help. Let generate
-        # node produce an explicit "insufficient information" response.
+            })
+        # All tools tried, all empty — retrying won't help. The agent's
+        # answer will explicitly state insufficient information.
         return {"quality_passed": True, "retrieval_attempts": attempts}
 
     # Policy 3: SQL results reference specific regulations → retrieve the text.
@@ -63,13 +77,13 @@ def quality_gate_node(state: PipelineState, config: RunnableConfig) -> dict:
             row.get("regulation_breached") for row in sql_results
         )
         if has_regulation_refs:
-            return {
+            return _maybe_add_caveat({
                 "quality_passed": False,
                 "quality_feedback": (
                     "SQL results reference specific regulations. "
                     "Use vector_search to retrieve the cited regulation text."
                 ),
                 "retrieval_attempts": attempts,
-            }
+            })
 
     return {"quality_passed": True, "retrieval_attempts": attempts}

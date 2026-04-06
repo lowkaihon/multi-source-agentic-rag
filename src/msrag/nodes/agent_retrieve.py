@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 
 from langchain_core.messages import AIMessage, SystemMessage, ToolMessage
 
@@ -12,11 +13,75 @@ from langgraph.config import CONFIG_KEY_RUNTIME
 from msrag.state import Context, PipelineState
 
 
+def _extract_citations(answer_text: str) -> list[dict]:
+    """Extract citations from the agent's final answer text.
+
+    Recognizes patterns: [Source: filename], [SQL Result], [Web: url]
+    """
+    citations = []
+    seen: set[str] = set()
+
+    for match in re.finditer(r"\[Source:\s*([^\]]+)\]", answer_text):
+        ref = match.group(1).strip()
+        if ref not in seen:
+            seen.add(ref)
+            citations.append({"type": "document", "source": ref})
+
+    if "[SQL Result]" in answer_text:
+        citations.append({"type": "sql", "source": "structured database"})
+
+    for match in re.finditer(r"\[Web:\s*([^\]]+)\]", answer_text):
+        url = match.group(1).strip()
+        if url not in seen:
+            seen.add(url)
+            citations.append({"type": "web", "source": url})
+
+    return citations
+
+
+def _deduplicate_chunks(chunks: list[dict]) -> list[dict]:
+    """Deduplicate retrieved chunks by content hash."""
+    seen: set[int] = set()
+    unique = []
+    for chunk in chunks:
+        h = hash(chunk.get("content", ""))
+        if h not in seen:
+            seen.add(h)
+            unique.append(chunk)
+    return unique
+
+
+def _deduplicate_rows(rows: list[dict]) -> list[dict]:
+    """Deduplicate SQL rows by their content."""
+    seen: set[frozenset] = set()
+    unique = []
+    for row in rows:
+        key = frozenset(
+            (k, str(v)) for k, v in sorted(row.items())
+        )
+        if key not in seen:
+            seen.add(key)
+            unique.append(row)
+    return unique
+
+
+def _deduplicate_web(results: list[dict]) -> list[dict]:
+    """Deduplicate web results by URL."""
+    seen: set[str] = set()
+    unique = []
+    for r in results:
+        url = r.get("url", "")
+        if url not in seen:
+            seen.add(url)
+            unique.append(r)
+    return unique
+
+
 def parse_tool_results(messages: list) -> dict:
     """Extract structured results from agent's ToolMessage objects.
 
     Pure function — no side effects, testable with synthetic ToolMessages.
-    Last call per tool wins (agent may refine within its ReAct loop).
+    Accumulates results across all tool calls, then deduplicates.
     """
     extracted: dict = {
         "retrieved_chunks": [],
@@ -41,17 +106,28 @@ def parse_tool_results(messages: list) -> dict:
             continue
 
         if tool_name == "vector_search":
-            extracted["retrieved_chunks"] = content
+            extracted["retrieved_chunks"].extend(
+                content if isinstance(content, list) else []
+            )
         elif tool_name == "sql_query":
-            extracted["sql_results"] = content if isinstance(content, list) else []
+            extracted["sql_results"].extend(
+                content if isinstance(content, list) else []
+            )
         elif tool_name == "web_search":
-            extracted["web_results"] = content if isinstance(content, list) else []
+            extracted["web_results"].extend(
+                content if isinstance(content, list) else []
+            )
 
     # Deduplicate tools_called while preserving order
     seen: set[str] = set()
     extracted["tools_called"] = [
         t for t in extracted["tools_called"] if not (t in seen or seen.add(t))
     ]
+
+    # Deduplicate accumulated results
+    extracted["retrieved_chunks"] = _deduplicate_chunks(extracted["retrieved_chunks"])
+    extracted["sql_results"] = _deduplicate_rows(extracted["sql_results"])
+    extracted["web_results"] = _deduplicate_web(extracted["web_results"])
 
     return extracted
 
@@ -76,15 +152,16 @@ def agent_retrieve_node(state: PipelineState, config: RunnableConfig) -> dict:
 
     extracted = parse_tool_results(result["messages"])
 
-    # Extract agent reasoning from the last non-tool-call AIMessage
-    agent_reasoning = None
+    # Extract final answer from the last non-tool-call AIMessage
+    final_answer = None
     for msg in reversed(result["messages"]):
         if isinstance(msg, AIMessage) and not msg.tool_calls:
-            agent_reasoning = msg.content
+            final_answer = msg.content
             break
 
     return {
         "messages": result["messages"],
-        "agent_reasoning": agent_reasoning,
+        "final_answer": final_answer,
+        "citations": _extract_citations(final_answer or ""),
         **extracted,
     }

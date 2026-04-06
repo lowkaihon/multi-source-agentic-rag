@@ -46,27 +46,25 @@ def main():
         }
 
         # Stream with node-level progress output
-        final_state = None
+        final_state = {}
         for event in graph.stream(
             initial_state, config, context=context, stream_mode="updates"
         ):
-            for node_name in event:
+            for node_name, node_output in event.items():
+                final_state.update(node_output)
                 if node_name == "agent_retrieve":
-                    tools_used = event[node_name].get("tools_called", [])
+                    tools_used = node_output.get("tools_called", [])
                     print(f"  [Retrieving... tools: {', '.join(tools_used) if tools_used else 'none'}]")
                 elif node_name == "quality_gate":
-                    passed = event[node_name].get("quality_passed")
-                    if not passed:
-                        feedback = event[node_name].get("quality_feedback", "")
+                    passed = node_output.get("quality_passed")
+                    if not passed and node_output.get("retrieval_attempts", 0) < 2:
+                        feedback = node_output.get("quality_feedback", "")
                         print(f"  [Quality gate: retry — {feedback}]")
                     else:
                         print("  [Quality gate: passed]")
-                elif node_name == "generate":
-                    final_state = event[node_name]
-                    print("  [Generating answer...]")
 
-        if final_state:
-            print(f"\n{final_state.get('final_answer', 'No answer generated.')}")
+        if final_state.get("final_answer"):
+            print(f"\n{final_state['final_answer']}")
             if final_state.get("confidence_caveat"):
                 print(f"\n{final_state['confidence_caveat']}")
             if final_state.get("citations"):
