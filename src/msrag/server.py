@@ -44,6 +44,7 @@ async def lifespan(app: FastAPI):
             ddl_path=os.getenv("DDL_PATH", "corpus/data/sql/init_schema.sql"),
             opensearch_host=os.getenv("OPENSEARCH_HOST", "localhost"),
             opensearch_port=int(os.getenv("OPENSEARCH_PORT", "9200")),
+            opensearch_index=os.getenv("OPENSEARCH_INDEX", "mas_regulatory"),
             pg_host=os.getenv("PG_HOST", "localhost"),
             pg_port=int(os.getenv("PG_PORT", "5432")),
             pg_dbname=os.getenv("PG_DBNAME", "mas_compliance"),
