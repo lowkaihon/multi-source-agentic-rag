@@ -32,3 +32,8 @@ output "ecs_service_name" {
   description = "ECS service name"
   value       = aws_ecs_service.api.name
 }
+
+output "cloudfront_url" {
+  description = "HTTPS endpoint (CloudFront)"
+  value       = "https://${aws_cloudfront_distribution.api.domain_name}"
+}

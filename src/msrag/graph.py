@@ -14,7 +14,7 @@ from langgraph.graph import END, START, StateGraph
 
 from msrag.nodes.agent_retrieve import agent_retrieve_node
 from msrag.nodes.quality_gate import quality_gate_node
-from msrag.state import Context, PipelineState
+from msrag.state import Context, State
 from msrag.tools.builder import (
     build_agent_system_prompt,
     build_tools,
@@ -25,7 +25,7 @@ from msrag.tools.vector_search import OpenSearchClient
 
 
 def route_after_quality_gate(
-    state: PipelineState,
+    state: State,
 ) -> str:
     """Route: quality passed → END; max retries → END with caveat; else retry."""
     if state.get("quality_passed"):
@@ -37,7 +37,7 @@ def route_after_quality_gate(
 
 def build_graph():
     """Build and compile the 2-node RAG pipeline graph."""
-    builder = StateGraph(PipelineState, context_schema=Context)
+    builder = StateGraph(State, context_schema=Context)
 
     builder.add_node("agent_retrieve", agent_retrieve_node)
     builder.add_node("quality_gate", quality_gate_node)

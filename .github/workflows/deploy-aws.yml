@@ -10,6 +10,7 @@ env:
   ECR_REPOSITORY: msrag-api
   ECS_CLUSTER: msrag-cluster
   ECS_SERVICE: msrag-api
+  ECS_TASK_DEFINITION: msrag-api
 
 permissions:
   id-token: write
@@ -46,22 +47,28 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      - name: Deploy to ECS
+      - name: Download task definition
         run: |
-          aws ecs update-service \
-            --cluster $ECS_CLUSTER \
-            --service $ECS_SERVICE \
-            --force-new-deployment \
-            --region $AWS_REGION
+          aws ecs describe-task-definition \
+            --task-definition ${{ env.ECS_TASK_DEFINITION }} \
+            --query taskDefinition \
+            --output json > task-definition.json
 
-      - name: Wait for service stability
-        run: |
-          echo "Waiting for ECS service to stabilize..."
-          aws ecs wait services-stable \
-            --cluster $ECS_CLUSTER \
-            --services $ECS_SERVICE \
-            --region $AWS_REGION
-          echo "Service is stable"
+      - name: Render task definition with new image
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-def@v1
+        with:
+          task-definition: task-definition.json
+          container-name: api
+          image: ${{ steps.build-image.outputs.image }}
+
+      - name: Deploy to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-def@v2
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
 
       - name: Post-deploy health check
         run: |

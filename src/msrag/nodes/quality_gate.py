@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from langchain_core.runnables import RunnableConfig
 
-from msrag.state import PipelineState
+from msrag.state import State
 
 
 _CONFIDENCE_CAVEAT = (
@@ -25,7 +25,7 @@ def _maybe_add_caveat(result: dict) -> dict:
     return result
 
 
-def quality_gate_node(state: PipelineState, config: RunnableConfig) -> dict:
+def quality_gate_node(state: State, config: RunnableConfig) -> dict:
     """Policy enforcement point. No LLM calls."""
     attempts = (state.get("retrieval_attempts") or 0) + 1
     chunks = state.get("retrieved_chunks") or []

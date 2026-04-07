@@ -10,7 +10,7 @@ from langchain_core.messages import AIMessage, SystemMessage, ToolMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.config import CONFIG_KEY_RUNTIME
 
-from msrag.state import Context, PipelineState
+from msrag.state import Context, State
 
 
 def _extract_citations(answer_text: str) -> list[dict]:
@@ -132,7 +132,7 @@ def parse_tool_results(messages: list) -> dict:
     return extracted
 
 
-def agent_retrieve_node(state: PipelineState, config: RunnableConfig) -> dict:
+def agent_retrieve_node(state: State, config: RunnableConfig) -> dict:
     """Invoke agent subgraph, then extract structured state from ToolMessages."""
     ctx: Context = config["configurable"][CONFIG_KEY_RUNTIME].context
     agent = ctx.agent_subgraph

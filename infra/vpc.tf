@@ -39,20 +39,6 @@ resource "aws_internet_gateway" "main" {
   tags   = { Name = "${var.project_name}-igw" }
 }
 
-# NAT gateway (ECS tasks in private subnets need outbound for API calls)
-resource "aws_eip" "nat" {
-  domain = "vpc"
-  tags   = { Name = "${var.project_name}-nat-eip" }
-}
-
-resource "aws_nat_gateway" "main" {
-  allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public[0].id
-  tags          = { Name = "${var.project_name}-nat" }
-
-  depends_on = [aws_internet_gateway.main]
-}
-
 # Route tables
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
@@ -70,14 +56,10 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
+# Private subnets have no internet route (RDS only, no outbound needed)
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
   tags   = { Name = "${var.project_name}-private-rt" }
-
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.main.id
-  }
 }
 
 resource "aws_route_table_association" "private" {

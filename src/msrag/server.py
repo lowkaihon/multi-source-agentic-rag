@@ -74,11 +74,36 @@ Multi-source agentic RAG pipeline for MAS regulatory compliance.
 Intelligently routes queries across **vector search** (regulatory PDFs),
 **SQL** (structured enforcement data), and **web search** (recent publications).
 
+## Corpus
+
+**Source A — Vector Store**: 32 MAS regulatory PDFs (3,261 chunks)
+
+| Category | Documents |
+|----------|-----------|
+| Core Guidelines | 13 |
+| Consultation Papers | 5 |
+| Enforcement Reports | 5 |
+| Info Papers & Circulars | 9 |
+
+**Source B — SQL Database**: Enforcement data (PostgreSQL)
+
+| Table | Rows |
+|-------|------|
+| enforcement_actions | 337 |
+| regulated_entities | 317 |
+| regulatory_instruments | 32 |
+
+Action types: 166 prohibition orders · 64 criminal convictions · 50 composition penalties · 25 civil penalties · 14 reprimands
+
+Violation categories: 163 fit_and_proper · 44 market_abuse · 35 aml_cft
+
+**Source C — Web Search**: Real-time via Tavily (recent MAS publications)
+
 ## Architecture
 
-2-node LangGraph pipeline: `agent_retrieve` -> `quality_gate`
+2-node LangGraph pipeline: `agent_retrieve` → `quality_gate`
 
-- **agent_retrieve**: ReAct tool-calling loop (gpt-5.4-mini) — picks tools, evaluates results, produces cited answer
+- **agent_retrieve**: ReAct tool-calling loop — picks tools, evaluates results, produces cited answer
 - **quality_gate**: 3 deterministic policies, zero LLM calls — routes to retry or END
 """
 

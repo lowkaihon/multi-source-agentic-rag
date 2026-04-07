@@ -8,7 +8,7 @@ from langgraph.graph import add_messages
 from typing_extensions import Annotated, TypedDict
 
 
-class PipelineState(TypedDict):
+class State(TypedDict):
     """Full state schema for the 2-node RAG pipeline."""
 
     # === INPUT ===
