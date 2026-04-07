@@ -1,0 +1,40 @@
+{
+  "corpus_name": "MAS Regulatory Compliance",
+  "document_count": 32,
+  "chunk_count": 3261,
+  "sql_tables": [
+    "enforcement_actions",
+    "regulatory_instruments",
+    "regulated_entities"
+  ],
+  "sql_row_counts": {
+    "enforcement_actions": 337,
+    "regulatory_instruments": 32,
+    "regulated_entities": 317
+  },
+  "last_ingested": "2026-04-05T15:42:28.700226Z",
+  "embedding_model": "text-embedding-3-small",
+  "chunk_strategy": "recursive_character_1000_200",
+  "tool_description_context": {
+    "vector_store_summary": "You have access to 32 MAS regulatory documents (3261 chunks) indexed in the vector store. Documents include notices, guidelines, consultation papers, enforcement reports, information papers, and internal policy documents. Topics covered: AML/CFT, technology risk, outsourcing, AI governance, business continuity, enforcement, business conduct, and sanctions.",
+    "sql_summary": "You have access to a SQL database with: 337 enforcement action records, 32 regulatory instrument records, and 317 regulated entity records. Use SQL for questions about counts, amounts, dates, filtered lists, or structured comparisons.",
+    "web_search_summary": "The corpus was last updated on 05 April 2026. Queries about events after this date, or about topics not covered by the indexed corpus (e.g., cross-jurisdictional comparisons, industry commentary), may need web search."
+  },
+  "document_type_distribution": {
+    "guideline": 760,
+    "notice": 398,
+    "consultation_paper": 706,
+    "enforcement_report": 246,
+    "information_paper": 1151
+  },
+  "topic_tag_distribution": {
+    "business_conduct": 990,
+    "outsourcing": 633,
+    "business_continuity": 719,
+    "enforcement": 199,
+    "technology_risk": 1094,
+    "sanctions": 151,
+    "aml_cft": 542,
+    "ai_governance": 944
+  }
+}
