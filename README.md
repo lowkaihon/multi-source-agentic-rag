@@ -15,12 +15,6 @@ This project extends [Advanced Agentic RAG](https://github.com/lowkaihon/agentic
 
 **Live API:** https://d2l5kw630a12et.cloudfront.net
 
-```bash
-curl -X POST https://d2l5kw630a12et.cloudfront.net/v1/query \
-  -H 'Content-Type: application/json' \
-  -d '{"question": "What are MAS CDD requirements for PEPs?"}'
-```
-
 ## Key Results
 
 - **Correctness: 3.45/5.0 mean, 4.0/5.0 median** across 51 golden dataset questions
@@ -93,25 +87,14 @@ graph TD;
 
 ## Quick Start
 
-**Prerequisites:** Python 3.12+, Docker, OpenAI API key
-
 ```bash
-# 1. Install
-uv sync
-
-# 2. Configure
-cp .env.example .env
-# Edit .env — set OPENAI_API_KEY (required), TAVILY_API_KEY (optional)
-
-# 3. Start infrastructure
-docker compose up -d
-
-# 4. Set up OpenSearch index + search pipeline + bulk index documents
-uv run python scripts/setup_opensearch.py
-
-# 5. Run
-uv run python main.py
+cp .env.example .env          # set OPENAI_API_KEY (required)
+docker compose up -d           # OpenSearch + PostgreSQL + Redis
+uv run python scripts/setup_opensearch.py  # index corpus
+uv run python main.py          # CLI REPL
 ```
+
+Prerequisites: Python 3.12+, Docker, OpenAI API key
 
 ## Tech Stack
 

@@ -54,7 +54,11 @@ def quality_gate_node(state: State, config: RunnableConfig) -> dict:
             })
 
     # Policy 2: All sources empty — retry only if untried tools remain.
+    # If no tools were called at all, the agent chose not to retrieve
+    # (e.g. conversational message) — trust the decision and pass through.
     if not chunks and not sql_results and not web_results:
+        if not tools_called:
+            return {"quality_passed": True, "retrieval_attempts": attempts}
         untried = [
             t
             for t in ["vector_search", "sql_query", "web_search"]

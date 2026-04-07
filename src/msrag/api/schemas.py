@@ -20,7 +20,7 @@ class QueryRequest(BaseModel):
         "json_schema_extra": {
             "examples": [
                 {
-                    "question": "What are MAS's CDD requirements for PEPs?",
+                    "question": "What enforcement actions has MAS taken related to Goldman Sachs?",
                     "thread_id": None,
                     "use_cache": True,
                 }
