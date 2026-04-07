@@ -13,7 +13,7 @@ This project extends [Advanced Agentic RAG](https://github.com/lowkaihon/agentic
 
 ## Demo
 
-**Live API:** `https://d2l5kw630a12et.cloudfront.net`
+**Live API:** https://d2l5kw630a12et.cloudfront.net
 
 ```bash
 curl -X POST https://d2l5kw630a12et.cloudfront.net/v1/query \
