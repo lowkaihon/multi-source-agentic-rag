@@ -91,6 +91,7 @@ def build_context(
     ddl_path: str = "corpus/data/sql/init_schema.sql",
     opensearch_host: str = "localhost",
     opensearch_port: int = 9200,
+    opensearch_index: str = "mas_regulatory",
     pg_host: str = "localhost",
     pg_port: int = 5432,
     pg_dbname: str = "mas_compliance",
@@ -111,7 +112,7 @@ def build_context(
     # Initialize infrastructure clients
     print("Connecting to OpenSearch...", end=" ", flush=True)
     opensearch_client = OpenSearchClient(
-        host=opensearch_host, port=opensearch_port
+        host=opensearch_host, port=opensearch_port, index_name=opensearch_index
     )
     try:
         health = opensearch_client.health_check()

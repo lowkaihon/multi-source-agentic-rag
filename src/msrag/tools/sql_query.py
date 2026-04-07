@@ -37,13 +37,15 @@ class SQLEngine:
             return [dict(row) for row in rows]
 
     def health_check(self) -> dict:
-        """Check PostgreSQL connectivity and row counts."""
+        """Check PostgreSQL connectivity and row counts for all public tables."""
+        tables = self.execute(
+            "SELECT table_name FROM information_schema.tables "
+            "WHERE table_schema = 'public' AND table_type = 'BASE TABLE' "
+            "ORDER BY table_name"
+        )
         counts = {}
-        for table in [
-            "enforcement_actions",
-            "regulatory_instruments",
-            "regulated_entities",
-        ]:
+        for row in tables:
+            table = row["table_name"]
             result = self.execute(f"SELECT COUNT(*) AS cnt FROM {table}")
             counts[table] = result[0]["cnt"]
         return counts
