@@ -1,0 +1,37 @@
+{
+  "corpus_name": "IRAS Corporate Tax Compliance",
+  "document_count": 14,
+  "chunk_count": 1360,
+  "sql_tables": [
+    "tax_rates",
+    "tax_instruments",
+    "double_tax_agreements"
+  ],
+  "sql_row_counts": {
+    "tax_rates": 32,
+    "tax_instruments": 14,
+    "double_tax_agreements": 24
+  },
+  "sql_schema_description": "Table: tax_rates\n  - id (SERIAL)\n  - year_of_assessment (INTEGER)\n  - rate_category (TEXT)  -- allowed values: corporate_income_tax, cit_rebate, partial_exemption_first_tier, partial_exemption_second_tier, startup_exemption_first_tier, startup_exemption_second_tier, withholding_tax_interest, withholding_tax_royalty, withholding_tax_technical_assistance, withholding_tax_director_fees, withholding_tax_reit_distribution, other\n  - rate_value (DECIMAL(6, 4))  -- e.g. 0.17 for 17%\n  - threshold_amount (DECIMAL(15, 2))  -- NULL if rate is flat\n  - threshold_currency (TEXT)\n  - applicable_to (TEXT)  -- \"all_companies\", \"qualifying_startups\", etc.\n  - description (TEXT)  -- Brief narrative description of the rate\n  - source_guide (TEXT)  -- Reference to the e-Tax Guide that documents it\n  - effective_from (DATE)\n  - effective_to (DATE)  -- NULL if still current\n  - created_at (TIMESTAMP)\n  - updated_at (TIMESTAMP)\n\nTable: tax_instruments\n  - id (SERIAL)\n  - instrument_id (TEXT UNIQUE)  -- e.g., \"etg_transfer_pricing_guidelines\"\n  - instrument_type (TEXT)  -- allowed values: e_tax_guide, circular, ruling, income_tax_act_section\n  - title (TEXT)\n  - short_name (TEXT)  -- Human-friendly short name\n  - publication_date (DATE)\n  - last_revised_date (DATE)\n  - topic_tags (TEXT[])  -- {\"corporate_tax\", \"transfer_pricing\", \"withholding_tax\", \"dta\", \"anti_avoidance\", \"tax_incentive\", \"substance_requirements\", \"tax_administration\"}\n  - applicable_to (TEXT[])  -- {\"resident_companies\", \"non_resident_companies\", \"holding_companies\"}\n  - status (TEXT)  -- allowed values: in_force, superseded, draft, historical\n  - superseded_by (TEXT)  -- instrument_id of replacement\n  - pdf_filename (TEXT)  -- Maps to vector store document\n  - source_url (TEXT)\n  - description (TEXT)  -- Brief summary\n  - created_at (TIMESTAMP)\n  - updated_at (TIMESTAMP)\n\nTable: double_tax_agreements\n  - id (SERIAL)\n  - treaty_partner (TEXT)  -- Country name\n  - treaty_partner_iso (TEXT)  -- ISO 3166 country code\n  - signed_date (DATE)\n  - in_force_date (DATE)\n  - dividend_wht_rate (DECIMAL(6, 4))  -- Reduced rate under treaty (NULL if N/A)\n  - interest_wht_rate (DECIMAL(6, 4))\n  - royalty_wht_rate (DECIMAL(6, 4))\n  - treaty_type (TEXT)  -- allowed values: comprehensive_dta, limited_dta, tiea\n  - is_active (BOOLEAN)\n  - notes (TEXT)\n  - created_at (TIMESTAMP)\n  - updated_at (TIMESTAMP)\n\nView: current_tax_rates\nView: active_comprehensive_dtas\nView: active_instruments",
+  "last_ingested": "2026-04-07T19:02:16.551571Z",
+  "embedding_model": "text-embedding-3-small",
+  "chunk_strategy": "recursive_character_1000_200",
+  "tool_description_context": {
+    "vector_store_summary": "You have access to 14 IRAS e-Tax Guides (1360 chunks) indexed in the vector store. Documents cover corporate income tax, transfer pricing, withholding tax, double tax agreements, anti-avoidance rules, tax incentives, substance requirements, and tax administration.",
+    "sql_summary": "You have access to a SQL database with: 32 tax rate records (CIT, PTE/SUTE exemption tiers, withholding tax rates by category, rebates), 14 tax instrument records, and 24 DTA records. Use SQL for questions about specific rates, treaty terms, instrument metadata, or quantitative comparisons.",
+    "web_search_summary": "The corpus was last updated on 07 April 2026. Queries about events after this date - new Budget announcements, recent IRAS rulings, or industry interpretation - may need web search."
+  },
+  "document_type_distribution": {
+    "e_tax_guide": 1360
+  },
+  "topic_tag_distribution": {
+    "tax_incentive": 156,
+    "corporate_tax": 200,
+    "dta": 178,
+    "tax_administration": 118,
+    "substance_requirements": 86,
+    "withholding_tax": 75,
+    "transfer_pricing": 465,
+    "anti_avoidance": 55
+  }
+}

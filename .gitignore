@@ -27,3 +27,9 @@ corpus/ingestion_output/*
 corpus/data/opensanctions/
 corpus/data/sql/seed/*.json
 corpus/manifests/download_log.json
+
+# IRAS corpus — generated/intermediate data (reproducible via scripts)
+iras_corpus/ingestion_output/*
+!iras_corpus/ingestion_output/metadata_manifest.json
+iras_corpus/data/sql/seed/*.json
+iras_corpus/manifests/download_log.json
