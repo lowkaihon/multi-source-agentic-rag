@@ -297,6 +297,11 @@ resource "aws_ecs_service" "api" {
   launch_type            = "FARGATE"
   enable_execute_command = true
 
+  # OpenSearch cannot share EFS data dir with a second instance.
+  # Stop old task before starting new one (brief downtime on deploy is acceptable).
+  deployment_minimum_healthy_percent = 0
+  deployment_maximum_percent         = 100
+
   network_configuration {
     subnets          = aws_subnet.public[*].id
     security_groups  = [aws_security_group.ecs.id]
