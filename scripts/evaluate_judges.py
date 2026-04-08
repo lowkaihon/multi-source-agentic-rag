@@ -168,11 +168,11 @@ def judge_groundedness(llm: ChatOpenAI, result: dict) -> dict:
 
     context_text = "\n".join(context_parts)
 
-    # Also include citations as evidence of what was available
-    citations = result.get("citations", [])
-    if citations:
-        sources = [c.get("source", "") for c in citations]
-        context_text += f"\nCitations in answer: {', '.join(sources)}"
+    # Also include sources consulted as evidence of what was available
+    sources_consulted = result.get("sources_consulted", [])
+    if sources_consulted:
+        sources = [c.get("source", "") for c in sources_consulted]
+        context_text += f"\nSources consulted: {', '.join(sources)}"
 
     prompt = GROUNDEDNESS_PROMPT.format(
         context=context_text,

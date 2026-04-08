@@ -127,9 +127,12 @@ def build_tools(manifest: dict, opensearch_client, sql_engine) -> list:
             results = sql_engine.execute(query)
             return json.dumps([dict(row) for row in results], default=str)
         except Exception as e:
-            return json.dumps(
-                {"error": str(e), "hint": "Check column names against schema"}
-            )
+            return json.dumps({
+                "error": str(e),
+                "hint": "Query information_schema to discover columns: "
+                "SELECT column_name, data_type FROM information_schema.columns "
+                "WHERE table_name = '<table>'",
+            })
 
     @tool
     def web_search_tool(query: str) -> str:
@@ -152,14 +155,12 @@ def build_tools(manifest: dict, opensearch_client, sql_engine) -> list:
         "references like 'paragraph 10.3', 'semantic' for conceptual queries)."
     )
 
-    sql_query.__doc__ = (
-        ctx.get(
-            "sql_summary",
-            f"Query structured data. Tables: {', '.join(manifest['sql_tables'])}. "
-            f"Row counts: {json.dumps(manifest['sql_row_counts'])}.",
-        )
-        + " SELECT only."
+    sql_summary = ctx.get(
+        "sql_summary",
+        f"Query structured data. Tables: {', '.join(manifest['sql_tables'])}. "
+        f"Row counts: {json.dumps(manifest['sql_row_counts'])}.",
     )
+    sql_query.__doc__ = f"{sql_summary} SELECT only."
 
     web_search_tool.__doc__ = ctx.get(
         "web_search_summary",
@@ -216,8 +217,14 @@ Generate SELECT queries only. The database is read-only.
 
 ## Answer Format
 After retrieving sufficient information, provide your final answer.
-- Cite every factual claim: [Source: filename], [SQL Result], or [Web: url].
-- Do not include claims you cannot cite.
+- Attribute each factual claim to its source inline, e.g.:
+  "Banks must file STRs within 15 days (MAS Notice 626, Section 13.4)"
+  "Goldman Sachs Singapore paid US$122 million (enforcement database)"
+  "MAS updated Notice 626 in June 2025 (mas.gov.sg)"
+- Use the document filename or section when citing corpus results.
+- Use "enforcement database" when citing SQL results.
+- Use the site name or URL when citing web results.
+- Do not include claims you cannot attribute to a retrieved source.
 - Do NOT invent facts or extrapolate beyond retrieved context.
 - If information is insufficient, say so explicitly.
 """

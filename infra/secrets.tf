@@ -37,3 +37,13 @@ resource "aws_secretsmanager_secret_version" "db_password" {
   secret_id     = aws_secretsmanager_secret.db_password.id
   secret_string = random_password.db.result
 }
+
+resource "aws_secretsmanager_secret" "langchain_api_key" {
+  name                    = "${var.project_name}/langchain-api-key"
+  recovery_window_in_days = 0
+}
+
+resource "aws_secretsmanager_secret_version" "langchain_api_key" {
+  secret_id     = aws_secretsmanager_secret.langchain_api_key.id
+  secret_string = var.langchain_api_key
+}

@@ -92,3 +92,10 @@ variable "redis_url" {
   default     = ""
   sensitive   = true
 }
+
+variable "langchain_api_key" {
+  description = "LangChain/LangSmith API key for tracing"
+  type        = string
+  default     = ""
+  sensitive   = true
+}

@@ -6,9 +6,13 @@ tool responses — the quality gate enforces policies the agent might not apply.
 
 from __future__ import annotations
 
+import logging
+
 from langchain_core.runnables import RunnableConfig
 
 from msrag.state import State
+
+logger = logging.getLogger(__name__)
 
 
 _CONFIDENCE_CAVEAT = (
@@ -35,6 +39,18 @@ def quality_gate_node(state: State, config: RunnableConfig) -> dict:
 
     has_primary = bool(chunks) or bool(sql_results)
 
+    def _log_and_return(result: dict, policy: str | None = None) -> dict:
+        logger.info(
+            "quality_gate_result",
+            extra={"structured": {
+                "event": "quality_gate_result",
+                "quality_passed": result.get("quality_passed", False),
+                "attempt": attempts,
+                "policy_triggered": policy,
+            }},
+        )
+        return result
+
     # Policy 1: Primary source requirement.
     # Regulatory answers must cite indexed sources, not web-only.
     # Only fires if agent never attempted primary sources — if it tried and
@@ -44,35 +60,45 @@ def quality_gate_node(state: State, config: RunnableConfig) -> dict:
             "vector_search" in tools_called or "sql_query" in tools_called
         )
         if not primary_attempted:
-            return _maybe_add_caveat({
-                "quality_passed": False,
-                "quality_feedback": (
-                    "Answer must be grounded in indexed corpus or structured database. "
-                    "Try vector_search or sql_query before relying on web results."
-                ),
-                "retrieval_attempts": attempts,
-            })
+            return _log_and_return(
+                _maybe_add_caveat({
+                    "quality_passed": False,
+                    "quality_feedback": (
+                        "Answer must be grounded in indexed corpus or structured database. "
+                        "Try vector_search or sql_query before relying on web results."
+                    ),
+                    "retrieval_attempts": attempts,
+                }),
+                "primary_source_requirement",
+            )
 
     # Policy 2: All sources empty — retry only if untried tools remain.
     # If no tools were called at all, the agent chose not to retrieve
     # (e.g. conversational message) — trust the decision and pass through.
     if not chunks and not sql_results and not web_results:
         if not tools_called:
-            return {"quality_passed": True, "retrieval_attempts": attempts}
+            return _log_and_return(
+                {"quality_passed": True, "retrieval_attempts": attempts}
+            )
         untried = [
             t
             for t in ["vector_search", "sql_query", "web_search"]
             if t not in tools_called
         ]
         if untried:
-            return _maybe_add_caveat({
-                "quality_passed": False,
-                "quality_feedback": f"All results empty. Try: {', '.join(untried)}.",
-                "retrieval_attempts": attempts,
-            })
+            return _log_and_return(
+                _maybe_add_caveat({
+                    "quality_passed": False,
+                    "quality_feedback": f"All results empty. Try: {', '.join(untried)}.",
+                    "retrieval_attempts": attempts,
+                }),
+                "all_sources_empty",
+            )
         # All tools tried, all empty — retrying won't help. The agent's
         # answer will explicitly state insufficient information.
-        return {"quality_passed": True, "retrieval_attempts": attempts}
+        return _log_and_return(
+            {"quality_passed": True, "retrieval_attempts": attempts}
+        )
 
     # Policy 3: SQL results reference specific regulations → retrieve the text.
     # Data-driven: checks if regulation_breached field is populated.
@@ -81,13 +107,18 @@ def quality_gate_node(state: State, config: RunnableConfig) -> dict:
             row.get("regulation_breached") for row in sql_results
         )
         if has_regulation_refs:
-            return _maybe_add_caveat({
-                "quality_passed": False,
-                "quality_feedback": (
-                    "SQL results reference specific regulations. "
-                    "Use vector_search to retrieve the cited regulation text."
-                ),
-                "retrieval_attempts": attempts,
-            })
+            return _log_and_return(
+                _maybe_add_caveat({
+                    "quality_passed": False,
+                    "quality_feedback": (
+                        "SQL results reference specific regulations. "
+                        "Use vector_search to retrieve the cited regulation text."
+                    ),
+                    "retrieval_attempts": attempts,
+                }),
+                "sql_regulation_refs",
+            )
 
-    return {"quality_passed": True, "retrieval_attempts": attempts}
+    return _log_and_return(
+        {"quality_passed": True, "retrieval_attempts": attempts}
+    )

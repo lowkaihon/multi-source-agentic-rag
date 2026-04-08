@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-import re
+import logging
 
 from langchain_core.messages import AIMessage, SystemMessage, ToolMessage
 
@@ -12,31 +12,34 @@ from langgraph.config import CONFIG_KEY_RUNTIME
 
 from msrag.state import Context, State
 
+logger = logging.getLogger(__name__)
 
-def _extract_citations(answer_text: str) -> list[dict]:
-    """Extract citations from the agent's final answer text.
 
-    Recognizes patterns: [Source: filename], [SQL Result], [Web: url]
+def _build_sources_from_results(extracted: dict) -> list[dict]:
+    """Build sources_consulted from tool results, not LLM text.
+
+    Extracts document filenames, SQL source label, and web URLs
+    from the structured results the tools actually returned.
     """
-    citations = []
+    sources: list[dict] = []
     seen: set[str] = set()
 
-    for match in re.finditer(r"\[Source:\s*([^\]]+)\]", answer_text):
-        ref = match.group(1).strip()
-        if ref not in seen:
-            seen.add(ref)
-            citations.append({"type": "document", "source": ref})
+    for chunk in extracted.get("retrieved_chunks", []):
+        source = chunk.get("metadata", {}).get("source_document", "")
+        if source and source not in seen:
+            seen.add(source)
+            sources.append({"type": "document", "source": source})
 
-    if "[SQL Result]" in answer_text:
-        citations.append({"type": "sql", "source": "structured database"})
+    if extracted.get("sql_results"):
+        sources.append({"type": "sql", "source": "structured database"})
 
-    for match in re.finditer(r"\[Web:\s*([^\]]+)\]", answer_text):
-        url = match.group(1).strip()
-        if url not in seen:
+    for result in extracted.get("web_results", []):
+        url = result.get("url", "")
+        if url and url not in seen:
             seen.add(url)
-            citations.append({"type": "web", "source": url})
+            sources.append({"type": "web", "source": url})
 
-    return citations
+    return sources
 
 
 def _deduplicate_chunks(chunks: list[dict]) -> list[dict]:
@@ -159,9 +162,26 @@ def agent_retrieve_node(state: State, config: RunnableConfig) -> dict:
             final_answer = msg.content
             break
 
-    return {
+    sources = _build_sources_from_results(extracted)
+
+    output = {
         "messages": result["messages"],
         "final_answer": final_answer,
-        "citations": _extract_citations(final_answer or ""),
+        "sources_consulted": sources,
         **extracted,
     }
+
+    logger.info(
+        "agent_retrieve_complete",
+        extra={"structured": {
+            "event": "agent_retrieve_complete",
+            "tools_called": extracted["tools_called"],
+            "chunk_count": len(extracted["retrieved_chunks"]),
+            "sql_row_count": len(extracted["sql_results"]),
+            "web_result_count": len(extracted["web_results"]),
+            "sources_consulted_count": len(sources),
+            "attempt": state.get("retrieval_attempts", 0) + 1,
+        }},
+    )
+
+    return output

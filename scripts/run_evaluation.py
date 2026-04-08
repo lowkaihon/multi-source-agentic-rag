@@ -88,7 +88,7 @@ def _run_single_query_inner(
 
     return {
         "final_answer": accumulated.get("final_answer", ""),
-        "citations": accumulated.get("citations", []),
+        "sources_consulted": accumulated.get("sources_consulted", []),
         "confidence_caveat": accumulated.get("confidence_caveat"),
         "tools_called": accumulated.get("tools_called", []),
         "retrieved_chunks": accumulated.get("retrieved_chunks", []),

@@ -88,6 +88,7 @@ resource "aws_iam_role_policy" "ecs_secrets" {
         aws_secretsmanager_secret.tavily_api_key.arn,
         aws_secretsmanager_secret.redis_url.arn,
         aws_secretsmanager_secret.db_password.arn,
+        aws_secretsmanager_secret.langchain_api_key.arn,
       ]
     }]
   })
@@ -174,6 +175,8 @@ resource "aws_ecs_task_definition" "api" {
         { name = "CACHE_ENABLED", value = "true" },
         { name = "CORPUS_VERSION", value = "v1" },
         { name = "WAIT_FOR_OPENSEARCH", value = "1" },
+        { name = "LANGCHAIN_TRACING_V2", value = "true" },
+        { name = "LANGCHAIN_PROJECT", value = "msrag-prod" },
       ]
 
       secrets = [
@@ -181,6 +184,7 @@ resource "aws_ecs_task_definition" "api" {
         { name = "TAVILY_API_KEY", valueFrom = aws_secretsmanager_secret.tavily_api_key.arn },
         { name = "REDIS_URL", valueFrom = aws_secretsmanager_secret.redis_url.arn },
         { name = "PG_PASSWORD", valueFrom = aws_secretsmanager_secret.db_password.arn },
+        { name = "LANGCHAIN_API_KEY", valueFrom = aws_secretsmanager_secret.langchain_api_key.arn },
       ]
 
       logConfiguration = {

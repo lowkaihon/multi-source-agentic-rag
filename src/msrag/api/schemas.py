@@ -20,7 +20,7 @@ class QueryRequest(BaseModel):
         "json_schema_extra": {
             "examples": [
                 {
-                    "question": "What enforcement actions has MAS taken related to Goldman Sachs?",
+                    "question": "What are the penalties for not complying with MAS anti-money laundering regulations?",
                     "thread_id": None,
                     "use_cache": True,
                 }
@@ -34,7 +34,7 @@ class QueryResponse(BaseModel):
 
     answer: str = Field(..., description="The generated answer")
     tools_called: list[str] = Field(..., description="Tools invoked during retrieval")
-    citations: list[dict] = Field(..., description="Source citations [{type, source}]")
+    sources_consulted: list[dict] = Field(..., description="Sources consulted during retrieval [{type, source}]")
     retrieval_attempts: int = Field(..., ge=0, description="Number of retrieval attempts")
     quality_passed: bool = Field(..., description="Whether the quality gate passed")
     confidence_caveat: Optional[str] = Field(None, description="Caveat if quality gate failed")

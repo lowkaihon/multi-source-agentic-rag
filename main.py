@@ -67,8 +67,8 @@ def main():
             print(f"\n{final_state['final_answer']}")
             if final_state.get("confidence_caveat"):
                 print(f"\n{final_state['confidence_caveat']}")
-            if final_state.get("citations"):
-                sources = [c.get("source", "") for c in final_state["citations"]]
+            if final_state.get("sources_consulted"):
+                sources = [c.get("source", "") for c in final_state["sources_consulted"]]
                 print(f"\nSources: {', '.join(sources)}")
 
 

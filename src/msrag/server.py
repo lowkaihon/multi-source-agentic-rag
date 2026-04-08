@@ -1,6 +1,7 @@
 """FastAPI server for the Multi-Source RAG pipeline."""
 
 import asyncio
+import logging
 import os
 import time
 import uuid
@@ -21,6 +22,9 @@ from msrag.api.schemas import (
 )
 from msrag.cache import SemanticCache
 from msrag.graph import build_context, build_graph
+from msrag.logging_config import configure_logging
+
+logger = logging.getLogger(__name__)
 
 # Module-level state (initialized in lifespan)
 graph = None
@@ -34,6 +38,7 @@ async def lifespan(app: FastAPI):
     global graph, context, semantic_cache
 
     load_dotenv()
+    configure_logging(os.getenv("LOG_LEVEL", "INFO"))
 
     print("Initializing pipeline...")
     try:
@@ -207,6 +212,15 @@ async def query_rag(request: QueryRequest):
             response_data["cache_hit"] = True
             response_data["cache_similarity"] = cached["similarity"]
             response_data["processing_time_seconds"] = round(lookup_time, 2)
+            logger.info(
+                "query_complete",
+                extra={"structured": {
+                    "event": "query_complete",
+                    "question": request.question[:80],
+                    "cache_hit": True,
+                    "processing_time": round(lookup_time, 2),
+                }},
+            )
             return QueryResponse(**response_data)
 
     # Build initial state (same pattern as main.py)
@@ -232,11 +246,25 @@ async def query_rag(request: QueryRequest):
         response_fields = dict(
             answer=final_state.get("final_answer", "No answer generated"),
             tools_called=final_state.get("tools_called") or [],
-            citations=final_state.get("citations") or [],
+            sources_consulted=final_state.get("sources_consulted") or [],
             retrieval_attempts=final_state.get("retrieval_attempts", 0),
             quality_passed=final_state.get("quality_passed", False),
             confidence_caveat=final_state.get("confidence_caveat"),
             processing_time_seconds=round(processing_time, 2),
+        )
+
+        logger.info(
+            "query_complete",
+            extra={"structured": {
+                "event": "query_complete",
+                "question": request.question[:80],
+                "cache_hit": False,
+                "tools_called": response_fields["tools_called"],
+                "quality_passed": response_fields["quality_passed"],
+                "retrieval_attempts": response_fields["retrieval_attempts"],
+                "sources_consulted_count": len(response_fields["sources_consulted"]),
+                "processing_time": response_fields["processing_time_seconds"],
+            }},
         )
 
         # Store in semantic cache
@@ -246,6 +274,13 @@ async def query_rag(request: QueryRequest):
         return QueryResponse(**response_fields)
 
     except Exception as e:
+        logger.exception(
+            "query_error",
+            extra={"structured": {
+                "event": "query_error",
+                "question": request.question[:80],
+            }},
+        )
         raise HTTPException(
             status_code=500, detail=f"Error processing query: {str(e)}"
         )

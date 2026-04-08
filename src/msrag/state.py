@@ -21,7 +21,7 @@ class State(TypedDict):
     web_results: Optional[list[dict]]  # [{snippet, url}]
     tools_called: Optional[list[str]]  # ["vector_search", "sql_query"]
     final_answer: Optional[str]  # Agent's cited answer
-    citations: Optional[list[dict]]  # [{type, source}]
+    sources_consulted: Optional[list[dict]]  # [{type, source}]
 
     # === QUALITY GATE ===
     quality_passed: Optional[bool]
