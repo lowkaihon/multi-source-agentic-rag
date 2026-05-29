@@ -1,8 +1,8 @@
 name: Deploy to AWS ECS
 
+# The AWS environment is torn down between demos for cost (see README -> Deployment & Cost),
+# so this pipeline is manual-dispatch only. Re-add the push trigger when the stack is live.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 env:

@@ -184,7 +184,7 @@ Infrastructure is defined as Terraform in [`infra/`](infra/) and deploys to **AW
 | Networking | VPC across 2 AZs | Public subnets (ALB + task), private subnets (RDS); no NAT gateway |
 | Observability | CloudWatch Logs + Container Insights | Per-container log streams |
 
-**CI/CD** — pushes to `main` trigger [`.github/workflows/deploy-aws.yml`](.github/workflows/deploy-aws.yml): GitHub Actions authenticates to AWS via **OIDC** (no long-lived keys), builds and pushes the image to ECR, renders a fresh task definition, deploys to ECS with `wait-for-service-stability`, and health-checks through the ALB.
+**CI/CD** — [`.github/workflows/deploy-aws.yml`](.github/workflows/deploy-aws.yml) builds and pushes the image to ECR, renders a fresh task definition, deploys to ECS with `wait-for-service-stability`, and health-checks through the ALB — authenticating to AWS via **OIDC** (no long-lived keys). It's wired for push-to-`main` but currently set to manual dispatch, since the environment is torn down for cost.
 
 ### Cost decision
 
