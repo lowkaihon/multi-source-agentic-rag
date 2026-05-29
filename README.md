@@ -13,7 +13,15 @@ This project extends [Advanced Agentic RAG](https://github.com/lowkaihon/agentic
 
 ## Demo
 
-**Live API:** https://d2l5kw630a12et.cloudfront.net
+**▶️ 1-minute walkthrough**
+
+<!-- DEMO VIDEO — add via the GitHub web editor: open this README → ✏️ Edit → drag-and-drop
+     the .mp4/.mov onto the blank line below. GitHub uploads it and inserts a
+     https://github.com/<user>/<repo>/assets/... URL that renders as an inline player.
+     Keep it as a bare URL on its own line (not a [markdown](link)). -->
+
+
+The full AWS deployment (see [Deployment & Cost](#deployment--cost)) was provisioned, verified end-to-end against the golden dataset, and then **torn down to keep idle cost at ~$0** — this is a portfolio project with no sustained traffic. You can run the entire system locally in minutes (see [Quick Start](#quick-start)), or redeploy the full AWS stack from the Terraform in [`infra/`](infra/) with a single command.
 
 ## Key Results
 
@@ -30,6 +38,7 @@ This project extends [Advanced Agentic RAG](https://github.com/lowkaihon/agentic
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Configuration](#configuration)
+- [Deployment & Cost](#deployment--cost)
 - [SQL Schema](#sql-schema)
 - [Evaluation](#evaluation)
 
@@ -159,6 +168,37 @@ Copy `.env.example` to `.env` and set:
 | `LANGCHAIN_API_KEY` | No | LangSmith API key |
 
 Docker service defaults (`localhost:9200` for OpenSearch, `localhost:5432` for PostgreSQL) are overridable via env vars.
+
+## Deployment & Cost
+
+Infrastructure is defined as Terraform in [`infra/`](infra/) and deploys to **AWS ECS Fargate**. The stack mirrors a production multi-service topology rather than a single-box demo:
+
+| Layer | Resource | Notes |
+|-------|----------|-------|
+| Edge | CloudFront | HTTPS termination on the default domain; caching disabled (dynamic API) |
+| Load balancing | Application Load Balancer | Routes to the API container on :8000, `/v1/health` checks |
+| Compute | ECS Fargate task (multi-container) | API container + OpenSearch 2.18 sidecar, sharing the task network namespace |
+| Vector store | OpenSearch on EFS | Index persists on an encrypted EFS volume across task restarts |
+| Structured data | RDS PostgreSQL 16 | Private subnets, encrypted, not publicly accessible |
+| Secrets | Secrets Manager | OpenAI / Tavily / Redis / LangSmith keys + a generated DB password |
+| Networking | VPC across 2 AZs | Public subnets (ALB + task), private subnets (RDS); no NAT gateway |
+| Observability | CloudWatch Logs + Container Insights | Per-container log streams |
+
+**CI/CD** — pushes to `main` trigger [`.github/workflows/deploy-aws.yml`](.github/workflows/deploy-aws.yml): GitHub Actions authenticates to AWS via **OIDC** (no long-lived keys), builds and pushes the image to ECR, renders a fresh task definition, deploys to ECS with `wait-for-service-stability`, and health-checks through the ALB.
+
+### Cost decision
+
+Running this stack 24/7 — RDS + ALB + CloudFront + a continuously-running Fargate task — costs roughly **$85–110/month** at idle, which isn't justified for a portfolio project with no sustained traffic. The deployment was provisioned, **verified end-to-end against the golden dataset, then torn down with `terraform destroy` to return idle cost to ~$0.** The Terraform *is* the deliverable: the entire environment reproduces from scratch.
+
+```bash
+# from repo root, with AWS credentials configured
+export TF_VAR_openai_api_key="sk-..."   # plus TF_VAR_tavily_api_key / redis_url / langchain_api_key
+bash scripts/deploy-infra.sh            # terraform init + plan + apply
+
+# seed data into the running task
+bash scripts/seed-rds.sh                # schema + enforcement / instrument / entity rows
+bash scripts/seed-opensearch.sh         # index the corpus into the OpenSearch sidecar
+```
 
 ## SQL Schema
 
