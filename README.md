@@ -13,13 +13,7 @@ This project extends [Advanced Agentic RAG](https://github.com/lowkaihon/agentic
 
 ## Demo
 
-**▶️ 1-minute walkthrough**
-
-<!-- DEMO VIDEO — add via the GitHub web editor: open this README → ✏️ Edit → drag-and-drop
-     the .mp4/.mov onto the blank line below. GitHub uploads it and inserts a
-     https://github.com/<user>/<repo>/assets/... URL that renders as an inline player.
-     Keep it as a bare URL on its own line (not a [markdown](link)). -->
-
+https://github.com/user-attachments/assets/6fe52176-23f8-43b6-b676-47f139d60be4
 
 The full AWS deployment (see [Deployment & Cost](#deployment--cost)) was provisioned, verified end-to-end against the golden dataset, and then **torn down to keep idle cost at ~$0** — this is a portfolio project with no sustained traffic. You can run the entire system locally in minutes (see [Quick Start](#quick-start)), or redeploy the full AWS stack from the Terraform in [`infra/`](infra/) with a single command.
 
